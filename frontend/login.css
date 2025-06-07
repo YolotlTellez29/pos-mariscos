@@ -1,0 +1,137 @@
+  :root {
+    --color-bg: #ffffff;
+    --color-primary: #111827;
+    --color-gray: #6b7280;
+    --color-accent: #2563eb;
+    --color-accent-hover: #1d4ed8;
+    --radius: 0.75rem;
+    --shadow-light: 0 2px 10px rgba(0,0,0,0.05);
+    --transition-fast: 0.2s ease-in-out;
+    font-family: 'Poppins', Arial, sans-serif;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body, html {
+    margin: 0;
+    background: var(--color-bg);
+    color: var(--color-gray);
+    font-size: 16px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-feature-settings: "liga" on;
+  }
+
+  .container {
+    max-width: 400px;
+    width: 90vw;
+    padding: 2rem;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-light);
+  }
+
+  h1 {
+    font-weight: 700;
+    font-size: 3rem;
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+    user-select: none;
+  }
+  p.subtitle {
+    font-weight: 500;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+    color: var(--color-gray);
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    color: var(--color-primary);
+    user-select: none;
+  }
+  input, select {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 1.5px solid #d1d5db;
+    border-radius: var(--radius);
+    outline-offset: 2px;
+    transition: border-color var(--transition-fast);
+    font-family: inherit;
+  }
+  input:focus, select:focus {
+    border-color: var(--color-accent);
+    outline: none;
+  }
+
+  button {
+    background: var(--color-accent);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.75rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color var(--transition-fast), transform var(--transition-fast);
+    user-select: none;
+  }
+  button:hover,
+  button:focus {
+    background: var(--color-accent-hover);
+    outline: none;
+    transform: scale(1.05);
+  }
+  button:disabled {
+    background: #a5b4fc;
+    cursor: default;
+    transform: none;
+  }
+
+  .link-button {
+    background: none;
+    border: none;
+    color: var(--color-accent);
+    font-weight: 600;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.9rem;
+    align-self: flex-start;
+    transition: color var(--transition-fast);
+  }
+  .link-button:hover,
+  .link-button:focus {
+    color: var(--color-accent-hover);
+    outline: none;
+  }
+
+  /* Hide all pages by default */
+  section.page {
+    display: none;
+  }
+  section.page.active {
+    display: block;
+  }
+
+  /* Role select styling */
+  select {
+    cursor: pointer;
+  }
+
+  /* Small helper text */
+  .helper-text {
+    font-size: 0.85rem;
+    color: var(--color-gray);
+  }

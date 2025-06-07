@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Punto de Venta - Restaurante de Mariscos</title>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+/>
+<link rel="stylesheet" href="orden.css" />
+<style>
+  
+</style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar is-sticky has-shadow" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="#" aria-label="Logo punto de venta restaurante mariscos">
+        Mariscos POS
+      </a>
+      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <div id="navMenu" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="#">Inicio</a>
+        <a class="navbar-item" href="#">Pedidos</a>
+        <a class="navbar-item" href="#">Inventario</a>
+        <a class="navbar-item" href="#">Configuración</a>
+      </div>
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Cerrar Sesión</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" role="main" aria-label="Sistema de punto de venta restaurante mariscos">
+    <h1 class="title">Sistema de Punto de Venta</h1>
+    <h2 class="subtitle">Restaurante de Mariscos</h2>
+    <section class="columns is-gapless" aria-label="Interfaz principal del punto de venta">
+      <!-- Menu panel -->
+      <aside class="column is-half menu-panel" aria-label="Panel de productos y categorías">
+        <nav class="menu-categories" role="navigation" aria-label="Categorías de platillos">
+          <button class="category-btn is-active" data-category="todos">Todos</button>
+          <button class="category-btn" data-category="cocteles">Cócteles</button>
+          <button class="category-btn" data-category="tostadas">Tostadas</button>
+          <button class="category-btn" data-category="camarones">Camarones</button>
+          <button class="category-btn" data-category="pescados">Pescados</button>
+          <button class="category-btn" data-category="otros">Otros</button>
+        </nav>
+        <div class="menu-items" id="menu-items" role="list" aria-label="Lista de platillos disponibles">
+          <!-- Dynamic menu items will be injected here -->
+        </div>
+      </aside>
+
+      <!-- Order panel -->
+      <aside class="column is-half order-panel" aria-label="Panel del pedido actual">
+        <div class="order-title" id="order-title" tabindex="0">Pedido</div>
+        <div class="order-items" id="order-items" role="list" aria-live="polite" aria-label="Lista de artículos en el pedido">
+          <!-- Dynamic order items injected here -->
+        </div>
+        <div class="order-summary" aria-label="Resumen del pedido">
+          <span>Total</span>
+          <span id="order-total">$0.00</span>
+        </div>
+        <div class="order-actions">
+          <button class="button is-clear" id="clear-order" type="button" aria-label="Limpiar pedido">Limpiar</button>
+          <button class="button is-pay" id="pay-order" type="button" aria-label="Pagar pedido">Pagar</button>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+<script>
+  // Responsive navbar burger toggle
+  document.addEventListener('DOMContentLoaded', () => {
+    const burger = document.querySelector('.navbar-burger');
+    const menu = document.getElementById('navMenu');
+    burger.addEventListener('click', () => {
+      burger.classList.toggle('is-active');
+      menu.classList.toggle('is-active');
+    });
+
+    // Categories button click handler
+    const categoryButtons = document.querySelectorAll('.category-btn');
+    categoryButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        categoryButtons.forEach(btn => btn.classList.remove('is-active'));
+        button.classList.add('is-active');
+        const category = button.getAttribute('data-category');
+        filterMenuItems(category);
+      });
+    });
+
+    // Mostrar número de mesa y clientes si existen
+    const mesaInfo = JSON.parse(localStorage.getItem('mesaInfo'));
+    if (mesaInfo) {
+      document.getElementById('order-title').textContent = `Pedido - Mesa ${mesaInfo.mesa} (${mesaInfo.clientes} clientes)`;
+    }
+  });
+
+  // Verificar sesión activa
+  if (!localStorage.getItem('token')) {
+    window.location.href = 'login.html';
+  }
+
+  // Sample menu items data
+  const menuData = [
+    { id: 1, category: 'cocteles', name: 'Cóctel de Camarón', desc: 'Camarones frescos con salsa especial', price: 120 },
+    { id: 2, category: 'tostadas', name: 'Tostada de Pulpo', desc: 'Pulpo con mayonesa y jitomate', price: 50 },
+    { id: 3, category: 'camarones', name: 'Camarones a la Diabla', desc: 'Camarones picantes con salsa roja', price: 150 },
+    { id: 4, category: 'pescados', name: 'Filete de Pescado', desc: 'Filete de pescado empanizado', price: 130 },
+    { id: 5, category: 'otros', name: 'Arroz a la Mexicana', desc: 'Acompañante clásico mexicano', price: 60 },
+    { id: 6, category: 'cocteles', name: 'Cóctel Mixto', desc: 'Mezcla de mariscos frescos', price: 140 },
+    { id: 7, category: 'tostadas', name: 'Tostada de Camarón', desc: 'Camarón con aguacate y salsa verde', price: 55 }
+  ];
+
+  const menuItemsContainer = document.getElementById('menu-items');
+  const orderItemsContainer = document.getElementById('order-items');
+  const orderTotalSpan = document.getElementById('order-total');
+  const clearOrderBtn = document.getElementById('clear-order');
+  const payOrderBtn = document.getElementById('pay-order');
+
+  let order = {};
+
+  function renderMenuItems(items) {
+    menuItemsContainer.innerHTML = '';
+    if (items.length === 0) {
+      menuItemsContainer.innerHTML = '<p>No hay platillos en esta categoría.</p>';
+      return;
+    }
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'menu-item-card';
+      card.setAttribute('role', 'listitem');
+      card.tabIndex = 0;
+
+      const detailsDiv = document.createElement('div');
+      detailsDiv.className = 'menu-item-details';
+
+      const title = document.createElement('div');
+      title.className = 'menu-item-title';
+      title.textContent = item.name;
+
+      const desc = document.createElement('div');
+      desc.className = 'menu-item-desc';
+      desc.textContent = item.desc;
+
+      detailsDiv.appendChild(title);
+      detailsDiv.appendChild(desc);
+
+      const priceDiv = document.createElement('div');
+      priceDiv.className = 'menu-item-price';
+      priceDiv.textContent = `$${item.price.toFixed(2)}`;
+
+      card.appendChild(detailsDiv);
+      card.appendChild(priceDiv);
+      card.addEventListener('click', () => addItemToOrder(item.id));
+
+      menuItemsContainer.appendChild(card);
+    });
+  }
+
+  function filterMenuItems(category) {
+    if (category === 'todos') {
+      renderMenuItems(menuData);
+    } else {
+      const filtered = menuData.filter(item => item.category === category);
+      renderMenuItems(filtered);
+    }
+  }
+
+  function addItemToOrder(id) {
+    if (!order[id]) {
+      const item = menuData.find(i => i.id === id);
+      order[id] = { ...item, qty: 1 };
+    } else {
+      order[id].qty++;
+    }
+    renderOrder();
+  }
+
+  function removeItemFromOrder(id) {
+    delete order[id];
+    renderOrder();
+  }
+
+  function changeQty(id, delta) {
+    if (!order[id]) return;
+    order[id].qty += delta;
+    if (order[id].qty <= 0) {
+      removeItemFromOrder(id);
+    } else {
+      renderOrder();
+    }
+  }
+
+  function renderOrder() {
+    orderItemsContainer.innerHTML = '';
+    const keys = Object.keys(order);
+    if (keys.length === 0) {
+      orderItemsContainer.innerHTML = '<p>El pedido está vacío.</p>';
+      orderTotalSpan.textContent = '$0.00';
+      return;
+    }
+    let total = 0;
+    keys.forEach(key => {
+      const item = order[key];
+      total += item.price * item.qty;
+
+      const div = document.createElement('div');
+      div.className = 'order-item';
+      div.setAttribute('role', 'listitem');
+
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'order-item-info';
+
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'order-item-name';
+      nameDiv.textContent = item.name;
+
+      infoDiv.appendChild(nameDiv);
+
+      const qtyControls = document.createElement('div');
+      qtyControls.className = 'order-item-qty-controls';
+
+      const btnMinus = document.createElement('button');
+      btnMinus.className = 'qty-btn';
+      btnMinus.setAttribute('aria-label', `Disminuir cantidad de ${item.name}`);
+      btnMinus.textContent = '−';
+      btnMinus.addEventListener('click', () => changeQty(item.id, -1));
+
+      const qtySpan = document.createElement('span');
+      qtySpan.className = 'order-item-qty';
+      qtySpan.textContent = item.qty;
+
+      const btnPlus = document.createElement('button');
+      btnPlus.className = 'qty-btn';
+      btnPlus.setAttribute('aria-label', `Aumentar cantidad de ${item.name}`);
+      btnPlus.textContent = '+';
+      btnPlus.addEventListener('click', () => changeQty(item.id, +1));
+
+      qtyControls.appendChild(btnMinus);
+      qtyControls.appendChild(qtySpan);
+      qtyControls.appendChild(btnPlus);
+
+      const priceDiv = document.createElement('div');
+      priceDiv.className = 'order-item-price';
+      priceDiv.textContent = `$${(item.price * item.qty).toFixed(2)}`;
+
+      div.appendChild(infoDiv);
+      div.appendChild(qtyControls);
+      div.appendChild(priceDiv);
+
+      orderItemsContainer.appendChild(div);
+    });
+    orderTotalSpan.textContent = `$${total.toFixed(2)}`;
+  }
+
+  function clearOrder() {
+    order = {};
+    renderOrder();
+  }
+
+  async function payOrder() {
+    if (Object.keys(order).length === 0) {
+      alert('El pedido está vacío.');
+      return;
+    }
+    // Obtener info de mesa y token
+    const mesaInfo = JSON.parse(localStorage.getItem('mesaInfo'));
+    const token = localStorage.getItem('token');
+    if (!mesaInfo || !token) {
+      alert('Falta información de mesa o sesión. Inicia sesión de nuevo.');
+      window.location.href = 'login.html';
+      return;
+    }
+    // Preparar datos para el backend
+    const orderItems = Object.values(order).map(item => ({
+      id: item.id,
+      name: item.name,
+      qty: item.qty,
+      price: item.price
+    }));
+    const payload = {
+      mesa: mesaInfo.mesa,
+      clientes: mesaInfo.clientes,
+      items: orderItems
+    };
+    try {
+      const resp = await fetch('http://localhost:8000/orden', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify(payload)
+      });
+      if (!resp.ok) {
+        const err = await resp.json();
+        alert("Error al enviar pedido: " + (err.detail || resp.statusText));
+        return;
+      }
+      alert('Pedido enviado correctamente.');
+      clearOrder();
+    } catch (err) {
+      alert('Error de conexión con el servidor.');
+    }
+  }
+
+  // Initialize UI
+  filterMenuItems('todos');
+  renderOrder();
+
+  // Button event handlers
+  clearOrderBtn.addEventListener('click', () => clearOrder());
+  payOrderBtn.addEventListener('click', () => payOrder());
+</script>
+</body>
+</html>
+

@@ -1,0 +1,274 @@
+/* Custom variables & styles to fit Default Design Guidelines */
+  :root {
+    --radius: 0.75rem;
+    --color-primary: #111827; /* dark gray */
+    --color-gray: #6b7280; /* neutral gray */
+    --color-bg: #ffffff;
+    --color-shadow: rgba(0, 0, 0, 0.1);
+    --transition-fast: 0.2s ease-in-out;
+  }
+
+  body {
+    font-family: 'Poppins', Arial, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-gray);
+    font-size: 16px;
+  }
+
+  /* Header Nav */
+  .navbar {
+    box-shadow: 0 2px 4px var(--color-shadow);
+  }
+  .navbar-brand .navbar-item {
+    font-weight: 700;
+    font-size: 1.75rem;
+    color: var(--color-primary);
+  }
+  .navbar-menu .navbar-start a.navbar-item,
+  .navbar-menu .navbar-end a.navbar-item {
+    font-weight: 600;
+    color: var(--color-gray);
+    transition: color var(--transition-fast);
+  }
+  .navbar-menu .navbar-start a.navbar-item:hover,
+  .navbar-menu .navbar-end a.navbar-item:hover {
+    color: #2563eb; /* blue accent */
+  }
+
+  /* Layout Container */
+  .container {
+    max-width: 1200px;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  /* Sections spacing */
+  section {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  /* Title */
+  h1.title {
+    font-weight: 800;
+    font-size: 3rem;
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+  }
+  h2.subtitle {
+    font-weight: 500;
+    color: var(--color-gray);
+    margin-bottom: 2rem;
+  }
+
+  /* Main layout columns */
+  .columns.is-gapless {
+    gap: 2rem;
+  }
+
+  /* Menu (left) panel */
+  .menu-panel {
+    height: 75vh;
+    background: #f9fafb;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 4px 8px var(--color-shadow);
+    display: flex;
+    flex-direction: column;
+  }
+  .menu-categories {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+  }
+  .category-btn {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px var(--color-shadow);
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: background-color var(--transition-fast), box-shadow var(--transition-fast);
+    border: 2px solid transparent;
+  }
+  .category-btn:hover,
+  .category-btn.is-active {
+    background-color: #2563eb;
+    color: white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
+    border-color: #1e40af;
+  }
+
+  .menu-items {
+    flex: 1 1 auto;
+    overflow-y: auto;
+  }
+  .menu-item-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: 0 1px 6px var(--color-shadow);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: box-shadow var(--transition-fast);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .menu-item-card:hover {
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+  }
+  .menu-item-details {
+    flex-grow: 1;
+    margin-right: 1rem;
+  }
+  .menu-item-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--color-primary);
+  }
+  .menu-item-desc {
+    font-size: 0.875rem;
+    color: var(--color-gray);
+  }
+  .menu-item-price {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #2563eb;
+  }
+
+  /* Order (right) panel */
+  .order-panel {
+    height: 75vh;
+    background: #fefefe;
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: 0 4px 8px var(--color-shadow);
+    display: flex;
+    flex-direction: column;
+  }
+  .order-title {
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-primary);
+  }
+  .order-items {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+  }
+  .order-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .order-item:last-child {
+    border-bottom: none;
+  }
+  .order-item-info {
+    flex-grow: 1;
+  }
+  .order-item-name {
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+  .order-item-qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 1rem;
+  }
+  .qty-btn {
+    background: #2563eb;
+    border: none;
+    color: white;
+    font-weight: 700;
+    padding: 0 0.5rem;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    transition: background-color var(--transition-fast);
+  }
+  .qty-btn:hover {
+    background: #1e40af;
+  }
+  .order-item-qty {
+    min-width: 1.8rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-primary);
+  }
+  .order-item-price {
+    font-weight: 700;
+    color: #2563eb;
+    margin-left: 1rem;
+    min-width: 4rem;
+    text-align: right;
+  }
+
+  /* Order Summary */
+  .order-summary {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--color-primary);
+    border-top: 2px solid #e5e7eb;
+    padding-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* Action buttons */
+  .order-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+  }
+  .button.is-clear {
+    background-color: #ef4444;
+    color: white;
+    font-weight: 700;
+    transition: background-color var(--transition-fast);
+  }
+  .button.is-clear:hover {
+    background-color: #b91c1c;
+  }
+  .button.is-pay {
+    background-color: #2563eb;
+    color: white;
+    font-weight: 700;
+    transition: background-color var(--transition-fast);
+  }
+  .button.is-pay:hover {
+    background-color: #1e40af;
+  }
+
+  /* Scrollbar for menu and order panel */
+  .menu-items::-webkit-scrollbar,
+  .order-items::-webkit-scrollbar {
+    width: 8px;
+  }
+  .menu-items::-webkit-scrollbar-track,
+  .order-items::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .menu-items::-webkit-scrollbar-thumb,
+  .order-items::-webkit-scrollbar-thumb {
+    background-color: rgba(37, 99, 235, 0.4);
+    border-radius: 10px;
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 900px) {
+    .columns.is-gapless {
+      flex-direction: column;
+    }
+    .menu-panel,
+    .order-panel {
+      height: auto;
+    }
+  }

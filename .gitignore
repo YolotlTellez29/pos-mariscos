@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Entorno virtual
+venv/
+
+# VSCode config (opcional)
+.vscode/
+
+# Archivos del sistema
+.DS_Store
+
+# Archivos de entorno (si usas .env para Mongo más adelante)
+.env

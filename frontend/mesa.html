@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Seleccionar Mesa - POS Restaurante Mariscos</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+<link rel="stylesheet" href="mesa.css" />
+<style>
+
+</style>
+</head>
+<body>
+  <header class="navbar" role="banner">
+    <div class="logo" aria-label="Logo del sistema de punto de venta restaurante mariscos" tabindex="0">Mariscos POS</div>
+    <nav aria-label="Navegación principal">
+      <a href="#" tabindex="0">Inicio</a>
+      <a href="#" tabindex="0">Pedidos</a>
+      <a href="#" tabindex="0">Cerrar sesión</a>
+    </nav>
+  </header>
+  <main class="container" role="main" aria-labelledby="page-title">
+    <h1 class="title" id="page-title">Seleccionar Mesa</h1>
+    <p class="subtitle">Por favor, elije la mesa, piso y número de clientes antes de continuar.</p>
+    <form id="select-table-form" class="box" novalidate>
+      <div class="field">
+        <label class="label">Piso</label>
+        <div class="control">
+          <div class="buttons has-addons">
+            <button type="button" class="button is-info is-selected floor-option" data-value="primer-piso">Primer Piso</button>
+            <button type="button" class="button floor-option" data-value="segundo-piso">Segundo Piso</button>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label" for="table-number">Número de Mesa</label>
+        <div class="control">
+          <div class="select">
+            <select id="table-number" name="table-number" required>
+              <option value="" disabled selected>-- Selecciona una mesa --</option>
+              <option value="1">Mesa 1</option>
+              <option value="2">Mesa 2</option>
+              <option value="3">Mesa 3</option>
+              <option value="4">Mesa 4</option>
+              <option value="5">Mesa 5</option>
+              <option value="6">Mesa 6</option>
+              <option value="7">Mesa 7</option>
+              <option value="8">Mesa 8</option>
+            </select>
+          </div>
+          <button type="button" class="button is-small is-link btn-add-table" aria-label="Agregar una nueva mesa">+ Agregar Mesa</button>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label" for="clients-qty">Cantidad de Clientes</label>
+        <div class="control">
+          <button type="button" class="button is-small qty-btn" aria-label="Disminuir cantidad">−</button>
+          <input class="input is-small" type="number" id="clients-qty" name="clients-qty" required min="1" max="30" value="1" />
+          <button type="button" class="button is-small qty-btn" aria-label="Aumentar cantidad">+</button>
+        </div>
+      </div>
+      <button class="button is-primary" type="submit" id="btn-select-continue" aria-label="Seleccionar mesa y continuar" disabled>Seleccionar y continuar</button>
+    </form>
+  </main>
+  <script>
+    // Redirigir a login si no hay token
+    if (!localStorage.getItem('token')) {
+      window.location.href = 'login.html';
+    }
+
+    // Floor selection toggle buttons logic
+    const floorButtons = document.querySelectorAll('.floor-option');
+    const floorGroup = document.querySelector('[role="radiogroup"]');
+    let selectedFloorIndex = 0;
+
+    floorButtons.forEach((btn, idx) => {
+      btn.addEventListener('click', () => {
+        selectFloor(idx);
+      });
+      btn.addEventListener('keydown', e => {
+        // Support arrow keys for radio groups
+        if(e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          selectFloor((idx + 1) % floorButtons.length);
+          floorButtons[(idx + 1) % floorButtons.length].focus();
+        }
+        if(e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          let prevIdx = idx -1;
+          if(prevIdx < 0) prevIdx = floorButtons.length - 1;
+          selectFloor(prevIdx);
+          floorButtons[prevIdx].focus();
+        }
+      });
+    });
+
+    function selectFloor(idx) {
+      floorButtons.forEach((btn, i) => {
+        if(i === idx){
+          btn.classList.add('selected');
+          btn.setAttribute('aria-checked', 'true');
+          btn.tabIndex = 0;
+          selectedFloorIndex = idx;
+        } else {
+          btn.classList.remove('selected');
+          btn.setAttribute('aria-checked', 'false');
+          btn.tabIndex = -1;
+        }
+      });
+    }
+
+    // Table number select and add new table
+    const tableSelect = document.getElementById('table-number');
+    const btnAddTable = document.querySelector('.btn-add-table');
+
+    btnAddTable.addEventListener('click', () => {
+      const newTableNumber = prompt('Ingrese número de la nueva mesa:');
+      const parsedNum = parseInt(newTableNumber, 10);
+      if(newTableNumber !== null && !isNaN(parsedNum) && parsedNum > 0){
+        // Check no duplicate option exists
+        if(!Array.from(tableSelect.options).some(opt => opt.value === parsedNum.toString())){
+          const opt = document.createElement('option');
+          opt.value = parsedNum.toString();
+          opt.textContent = `Mesa ${parsedNum}`;
+          tableSelect.appendChild(opt);
+          tableSelect.value = parsedNum.toString();
+          validateForm();
+        } else {
+          alert('Esta mesa ya existe.');
+        }
+      } else {
+        alert('Número de mesa inválido.');
+      }
+    });
+
+    // Client quantity increment/decrement
+    const qtyInput = document.getElementById('clients-qty');
+    const btnQtyMinus = document.querySelectorAll('.qty-btn')[0];
+    const btnQtyPlus = document.querySelectorAll('.qty-btn')[1];
+
+    btnQtyMinus.addEventListener('click', () => {
+      let val = parseInt(qtyInput.value, 10);
+      if(val > 1){
+        qtyInput.value = val - 1;
+        validateForm();
+      }
+    });
+    btnQtyPlus.addEventListener('click', () => {
+      let val = parseInt(qtyInput.value, 10);
+      if(val < 30){
+        qtyInput.value = val + 1;
+        validateForm();
+      }
+    });
+    qtyInput.addEventListener('input', () => {
+      let val = parseInt(qtyInput.value, 10);
+      if(isNaN(val) || val < 1) qtyInput.value = 1;
+      if(val > 30) qtyInput.value = 30;
+      validateForm();
+    });
+
+    // Form validation to enable/disable submit btn
+    const submitBtn = document.getElementById('btn-select-continue');
+    const form = document.getElementById('select-table-form');
+
+    function validateForm() {
+      const isTableSelected = tableSelect.value !== "";
+      const clientsVal = parseInt(qtyInput.value, 10);
+      if(isTableSelected && clientsVal >= 1 && clientsVal <= 30){
+        submitBtn.disabled = false;
+      } else {
+        submitBtn.disabled = true;
+      }
+    }
+
+    // Validate initially
+    validateForm();
+
+    // Listen to select change
+    tableSelect.addEventListener('change', validateForm);
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      if(submitBtn.disabled) return;
+
+      const selectedFloor = floorButtons[selectedFloorIndex].getAttribute('data-value');
+      const selectedTable = tableSelect.value;
+      const clientsQuantity = qtyInput.value;
+
+      // Guardar datos en localStorage
+      localStorage.setItem('mesaInfo', JSON.stringify({
+        piso: selectedFloor,
+        mesa: selectedTable,
+        clientes: clientsQuantity
+      }));
+      const mesaInfo = JSON.parse(localStorage.getItem('mesaInfo'));
+
+      // Redirigir a la página de orden
+      window.location.href = 'orden.html';
+    });
+
+  </script>
+</body>
+</html>
