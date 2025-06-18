@@ -16,7 +16,7 @@ Este sistema fue desarrollado con FastAPI, MongoDB y un frontend HTML para gesti
 ## Instalación
 
 ```bash
-git clone https://github.com/tu-usuario/pos-mariscos.git
+git clone https://github.com/YolotlTellez29/pos-mariscos.git
 cd pos-mariscos
 python3 -m venv venv
 source venv/bin/activate
