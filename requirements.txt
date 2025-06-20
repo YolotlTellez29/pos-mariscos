@@ -1,5 +1,6 @@
 fastapi
 uvicorn
-pymongo
+sqlalchemy
+pymysql
 python-jose
 passlib[bcrypt]
