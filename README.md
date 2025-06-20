@@ -184,4 +184,4 @@ README.md
 
 ## Contacto
 
-Para dudas o soporte, contacta a Yolotl Téllez en [su perfil de GitHub](https://github.com/YolotlTellez29) o por correo electrónico a yolotl.tellez@example.com.
+Para dudas o soporte, contacta a Yolotl Téllez en [su perfil de GitHub](https://github.com/YolotlTellez29).
