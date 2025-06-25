@@ -37,9 +37,21 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-#### **En Windows**
+#### **En Windowserge branch 'api'
+# Please enter a commit message to explain why this merge is necessary,
+# especially if it merges an updated upstream into a topic branch.
+#
+# Lines starting with '#' will be ignored, and an empty message aborts
+# the commit.
+**
 
-```cmd
+```cmderge branch 'api'
+# Please enter a commit message to explain why this merge is necessary,
+# especially if it merges an updated upstream into a topic branch.
+#
+# Lines starting with '#' will be ignored, and an empty message aborts
+# the commit.
+
 python -m venv venv
 venv\Scripts\activate
 ```
@@ -51,6 +63,12 @@ venv\Scripts\activate
 ```bash
 pip install -r requirements.txt
 ```
+erge branch 'api'
+# Please enter a commit message to explain why this merge is necessary,
+# especially if it merges an updated upstream into a topic branch.
+#
+# Lines starting with '#' will be ignored, and an empty message aborts
+# the commit.
 
 El archivo `requirements.txt` ya contiene todas las dependencias necesarias:
 
@@ -62,6 +80,12 @@ pymysql
 python-jose
 passlib[bcrypt]
 ```
+erge branch 'api'
+# Please enter a commit message to explain why this merge is necessary,
+# especially if it merges an updated upstream into a topic branch.
+#
+# Lines starting with '#' will be ignored, and an empty message aborts
+# the commit.
 
 ---
 
