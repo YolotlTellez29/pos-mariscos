@@ -144,20 +144,39 @@
     }
   });
 
-  document.getElementById('register-form').addEventListener('submit', e => {
+  document.getElementById('register-form').addEventListener('submit', async e => {
     e.preventDefault();
-    const pwd = e.target.password.value;
+    const name = e.target.name.value;
+    const email = e.target.email.value;
+    const password = e.target.password.value;
     const pwdConfirm = e.target['password-confirm'].value;
-    if(pwd !== pwdConfirm){
+    const role = e.target.role.value;
+
+    if(password !== pwdConfirm){
       alert("Las contraseñas no coinciden.");
       return;
     }
-    if(e.target.role.value === ""){
+    if(role === ""){
       alert("Por favor, selecciona un rol.");
       return;
     }
-    // Would call registration API here
-    alert(`Creando cuenta para ${e.target.name.value} con rol ${e.target.role.value}`);
+
+    try {
+      const resp = await fetch('http://localhost:8000/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, role })
+      });
+      if (!resp.ok) {
+        const err = await resp.json();
+        alert("Error: " + (err.detail || resp.statusText));
+        return;
+      }
+      alert("Cuenta creada correctamente. Ahora puedes iniciar sesión.");
+      showPage('page-login');
+    } catch (err) {
+      alert("Error de conexión con el servidor");
+    }
   });
 
   document.getElementById('recover-form').addEventListener('submit', e => {

@@ -11,5 +11,4 @@ venv/
 # Archivos del sistema
 .DS_Store
 
-# Archivos de entorno (si usas .env para Mongo más adelante)
 .env
